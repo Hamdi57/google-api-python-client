@@ -103,6 +103,12 @@ def _should_retry_response(resp_status, content):
         # If there's no details about the 403 type, don't retry.
         if not content:
             return False
+        else:
+            reason = json.loads(content).get('error', {}).get('errors', [{}])[0].get('reason', None)
+            if reason in _RETRY_REASONS:
+                return True
+    return False
+
 
         # Content is in JSON format.
         try:
